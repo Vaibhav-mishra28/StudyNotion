@@ -1,6 +1,8 @@
 import axios from "axios"
 
-export const axiosInstance = axios.create({});
+export const axiosInstance = axios.create({baseURL: process.env.REACT_APP_BASE_URL,
+  withCredentials: true, // important for cookies/auth
+   });
 
 export const apiConnector = (method, url, bodyData, headers, params)=>{
     return axiosInstance({
