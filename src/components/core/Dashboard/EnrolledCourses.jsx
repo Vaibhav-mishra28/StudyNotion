@@ -4,6 +4,7 @@ import ProgressBar from "@ramonak/react-progress-bar"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
 
 import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
 
@@ -15,6 +16,8 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(null)
   const getEnrolledCourses = async () => {
     try {
+      // Prevent multiple loading toasts by dismissing existing ones before fetching
+      toast.dismiss()
       const res = await getUserEnrolledCourses(token)
 
       setEnrolledCourses(res)

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import OtpInput from "otp-input-react";
 import { Link } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
@@ -8,7 +7,7 @@ import { sendOtp, signUp } from "../services/operations/authAPI";
 import { useNavigate } from "react-router-dom";
 
 function VerifyEmail() {
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(new Array(6).fill(""));
   const { signupData, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,6 +19,18 @@ function VerifyEmail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+    const newOtp = [...otp];
+    newOtp[index] = element.value;
+    setOtp(newOtp);
+
+    // Focus next input
+    if (element.nextSibling) {
+      element.nextSibling.focus();
+    }
+  };
 
   const handleVerifyAndSignup = (e) => {
     e.preventDefault();
@@ -40,7 +51,7 @@ function VerifyEmail() {
         email,
         password,
         confirmPassword,
-        otp,
+        otp.join(""),
         navigate
       )
     );
@@ -61,25 +72,22 @@ function VerifyEmail() {
             A verification code has been sent to you. Enter the code below
           </p>
           <form onSubmit={handleVerifyAndSignup}>
-            <OtpInput
-              value={otp}
-              onChange={setOtp}
-              numInputs={6}
-              renderInput={(props) => (
-                <input
-                  {...props}
-                  placeholder="-"
-                  style={{
-                    boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-                  }}
-                  className="w-[48px] lg:w-[60px] border-0 bg-richblack-800 rounded-[0.5rem] text-richblack-5 aspect-square text-center focus:border-0 focus:outline-2 focus:outline-yellow-50"
-                />
-              )}
-              containerStyle={{
-                justifyContent: "space-between",
-                gap: "0 6px",
-              }}
-            />
+            <div className="flex justify-between max-w-[320px] w-full gap-x-3">
+              {otp.map((data, index) => {
+                return (
+                  <input
+                    className="w-[40px] lg:w-[48px] border-0 bg-richblack-800 rounded-[0.5rem] text-richblack-5 aspect-square text-center focus:border-0 focus:outline-2 focus:outline-yellow-50"
+                    type="text"
+                    name="otp"
+                    maxLength="1"
+                    key={index}
+                    value={data}
+                    onChange={(e) => handleChange(e.target, index)}
+                    onFocus={(e) => e.target.select()}
+                  />
+                );
+              })}
+            </div>
             <button
               type="submit"
               className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
