@@ -18,21 +18,21 @@ const LearningLanguageSection = () => {
             progress tracking, custom schedule and more.
             </div>
 
-            <div className='flex flex-row items-center justify-center mt-5'>
+            <div className='flex flex-row flex-nowrap items-center justify-center mt-5 overflow-visible'>
             <img
                 src={Know_your_progress}
-                alt="KnowYourProgressImage"
-                className="object-contain  -mr-32 "
+                alt="Know your progress"
+                className="object-contain shrink-0 w-28 sm:w-36 md:w-44 lg:w-auto -mr-8 md:-mr-20 lg:-mr-32"
               />
               <img
                 src={Compare_with_others}
-                alt=""
-                className="object-contain lg:-mb-10 lg:-mt-0 -mt-12"
+                alt="Compare with others"
+                className="object-contain shrink-0 w-28 sm:w-36 md:w-44 lg:w-auto -mt-4 md:-mt-6 lg:-mt-0 lg:-mb-10"
               />
               <img
                 src={Plan_your_lessons}
-                alt=""
-                className="object-contain  lg:-ml-36 lg:-mt-5 -mt-16"
+                alt="Plan your lessons"
+                className="object-contain shrink-0 w-28 sm:w-36 md:w-44 lg:w-auto -ml-6 md:-ml-16 lg:-ml-36 -mt-6 md:-mt-10 lg:-mt-5"
               />
             </div>
 

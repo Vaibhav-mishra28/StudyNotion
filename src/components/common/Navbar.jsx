@@ -162,7 +162,7 @@
 
 
 import { useEffect, useState } from "react"
-import { AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
+import { AiOutlineMenu, AiOutlineShoppingCart, AiOutlineClose } from "react-icons/ai"
 import { BsChevronDown } from "react-icons/bs"
 import { useSelector } from "react-redux"
 import { Link, matchPath, useLocation } from "react-router-dom"
@@ -182,7 +182,7 @@ function Navbar() {
 
   const [subLinks, setSubLinks] = useState([])
   const [loading, setLoading] = useState(false)
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -196,6 +196,13 @@ function Navbar() {
       setLoading(false)
     })()
   }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isMobileMenuOpen])
 
   // console.log("sub links", subLinks)
 
@@ -237,9 +244,6 @@ function Navbar() {
                         ) : (subLinks && subLinks.length) ? (
                           <>
                             {subLinks
-                            //   ?.filter(
-                            //     (subLink) => subLink?.courses?.length > 0
-                            //   )
                               ?.map((subLink, i) => (
                                 <Link
                                   to={`/catalog/${subLink.name
@@ -304,10 +308,96 @@ function Navbar() {
           )}
           {token !== null && <ProfileDropdown />}
         </div>
-        <button className="mr-4 md:hidden">
+        <button className="mr-4 md:hidden" onClick={() => setIsMobileMenuOpen(true)} aria-label="Open menu" type="button">
           <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
         </button>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[1000] bg-black/50 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="absolute right-0 top-0 h-full w-4/5 max-w-[320px] bg-richblack-800 p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                <img src={logo} alt="Logo" width={140} height={28} loading="lazy" />
+              </Link>
+              <button className="p-2" aria-label="Close menu" type="button" onClick={() => setIsMobileMenuOpen(false)}>
+                <AiOutlineClose fontSize={22} className="text-richblack-100" />
+              </button>
+            </div>
+
+            <nav className="mt-6">
+              <ul className="flex flex-col gap-2 text-richblack-25">
+                {NavbarLinks.map((link, index) => (
+                  <li key={index}>
+                    {link.title === "Catalog" ? (
+                      <div>
+                        <p className="mb-2 text-xs uppercase text-richblack-300">Catalog</p>
+                        <div className="flex flex-col">
+                          {loading ? (
+                            <p className="px-3 py-2">Loading...</p>
+                          ) : (subLinks && subLinks.length) ? (
+                            subLinks.map((subLink, i) => (
+                              <Link
+                                key={i}
+                                to={`/catalog/${subLink.name.split(" ").join("-").toLowerCase()}`}
+                                className="rounded-lg px-3 py-2 hover:bg-richblack-700"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {subLink.name}
+                              </Link>
+                            ))
+                          ) : (
+                            <p className="px-3 py-2">No Courses Found</p>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <Link
+                        to={link?.path}
+                        className={`block rounded-lg px-3 py-2 hover:bg-richblack-700 ${
+                          matchRoute(link?.path) ? "text-yellow-25" : "text-richblack-25"
+                        }`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {link.title}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="mt-6 flex items-center gap-4">
+              {user && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
+                <Link to="/dashboard/cart" className="relative" onClick={() => setIsMobileMenuOpen(false)}>
+                  <AiOutlineShoppingCart className="text-2xl text-richblack-100" />
+                  {totalItems > 0 && (
+                    <span className="absolute -bottom-2 -right-2 grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-richblack-600 text-center text-xs font-bold text-yellow-100">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              )}
+              {token === null && (
+                <>
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100">
+                      Log in
+                    </button>
+                  </Link>
+                  <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100">
+                      Sign up
+                    </button>
+                  </Link>
+                </>
+              )}
+              {token !== null && <ProfileDropdown />}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
