@@ -37,13 +37,13 @@ const ExploreMore = () => {
             Learn to Build Anything You Can Imagine
           </p>
 
-        <div className='mt-5 flex flex-row rounded-full bg-richblack-800 mb-5 border-richblack-100 px-1 py-1'>
+        <div className='mt-5 flex flex-wrap justify-center rounded-full bg-richblack-800 mb-5 border-richblack-100 px-1 py-1 mx-4'>
             {
                 tabsName.map((element,index)=>{
                     return(
-                        <div className={`text-[16px] flex flex-row items-center gap-2 
+                        <div className={`text-[14px] sm:text-[16px] flex flex-row items-center gap-2 
                         ${currentTab === element ? "bg-richblack-900 text-richblack-5 font-medium"
-                         : "text-richblack-200"} rounded-full transition-all duration-200 cursor-pointer hover:bg-richblack-900 hover:text-richblack-5 px-7 py-2 `}
+                         : "text-richblack-200"} rounded-full transition-all duration-200 cursor-pointer hover:bg-richblack-900 hover:text-richblack-5 px-3 sm:px-5 md:px-7 py-2 m-1`}
                          key={index}
                          onClick={()=>setMyCards(element)}
                          >
